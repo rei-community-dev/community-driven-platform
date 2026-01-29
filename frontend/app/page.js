@@ -8,12 +8,15 @@ export default function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // First fetch the config to get backend URL
-    fetch('/api/config')
+    // Fetch config to get backend URL based on environment
+    fetch('/config.json')
       .then(res => res.json())
       .then(config => {
-        // Then fetch data from backend
-        return fetch(`${config.backendUrl}/api/welcome`);
+        const activeEnv = config.activeEnvironment;
+        const backendUrl = config.environments[activeEnv].backendUrl;
+        
+        // Fetch data from backend
+        return fetch(`${backendUrl}/api/welcome`);
       })
       .then(res => res.json())
       .then(data => {

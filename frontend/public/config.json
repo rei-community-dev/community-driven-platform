@@ -1,0 +1,14 @@
+{
+  "environments": {
+    "local": {
+      "backendUrl": "http://localhost:3001"
+    },
+    "azure": {
+      "backendUrl": "http://rei-opensource-backend-123.ewcchhbnauaha0fe.eastus.azurecontainer.io:3001"
+    },
+    "production": {
+      "backendUrl": "https://api.production.com"
+    }
+  },
+  "activeEnvironment": "azure"
+}

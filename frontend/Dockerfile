@@ -1,7 +1,6 @@
-# Use Node.js 18 as base image
-FROM node:18-alpine
+# Build stage
+FROM node:18-alpine AS builder
 
-# Set working directory inside container
 WORKDIR /app
 
 # Copy package files
@@ -13,11 +12,26 @@ RUN npm install
 # Copy application code
 COPY . .
 
-# Build Next.js for production
+# Build Next.js for production (creates standalone output)
 RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy standalone output
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
 # Expose port 3000
 EXPOSE 3000
 
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
